@@ -95,7 +95,7 @@ lando composer create-project drupal/recommended-project:^10 drupal10 --stabilit
 
 # Move the installation to the current folder, including the hidden files.
 rsync -r --remove-source-files drupal10/ ./
-
+rm drupal10/ -rf
 
 # Install a site local drush
 lando composer require drush/drush
