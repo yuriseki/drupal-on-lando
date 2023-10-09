@@ -69,7 +69,6 @@ config:
   php: 8.1 # Pin a specific version of PHP
   via: nginx # Use Nginx instead of Apache
   database: mariadb # Use Mariadb instead of MySQL
-services:
 
 tooling:
   # Override the default "lando drush" command so that the
