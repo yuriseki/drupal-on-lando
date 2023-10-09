@@ -1,0 +1,38 @@
+name: my-drupal10
+recipe: drupal10
+config:
+  webroot: web
+  php: 8.1 # Pin a specific version of PHP
+  via: nginx # Use Nginx instead of Apache
+  database: mariadb # Use Mariadb instead of MySQL
+
+services:
+  appserver:
+    overrides:
+      environment:
+        XDEBUG_MODE: 'debug' # Set the Xdebug mode option
+tooling:
+  # Override the default "lando drush" command so that the
+  # local website URL is passed to it. This is useful when
+  # generating login links.
+  drush:
+    service: appserver
+    env:
+      DRUSH_OPTIONS_URI: "https://my-drupal10.lndo.site"    
+  # Add a "lando xdebug-on" command for enabling Xdebug
+  xdebug-on:
+    service: appserver
+    description: Enable Xdebug.
+    user: root
+    cmd:
+      - docker-php-ext-enable xdebug && kill -USR2 $(pgrep -o php-fpm) > /dev/null || /etc/init.d/apache2 reload
+      - tput setaf 2 && echo "Xdebug On" && tput sgr 0 && echo
+
+  # Add a "lando xdebug-off" command for disabling Xdebug
+  xdebug-off:
+    service: appserver
+    description: Disable Xdebug.
+    user: root
+    cmd:
+      - rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && kill -USR2 $(pgrep -o php-fpm) > /dev/null || /etc/init.d/apache2 reload
+      - tput setaf 1 && echo "Xdebug Off" && tput sgr 0 && echo
